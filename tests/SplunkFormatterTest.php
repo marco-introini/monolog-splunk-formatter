@@ -17,6 +17,6 @@ beforeEach(function (){
 
 test('a basic string works with no conversions', function () {
     $str = faker()->text;
-    $converted = $this->splunkFormatter->publicConvertToString($str);
+    $converted = $this->splunkFormatter->toString($str);
     expect($converted)->toEqual($str);
 });
