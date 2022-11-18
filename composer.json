@@ -1,0 +1,30 @@
+{
+  "name": "marco-introini/monolog-splunk-formatter",
+  "description": "Splunk Line Formatter for Monolog",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Marco Introini",
+      "email": "mint.dev@pm.me",
+      "homepage": "http://marcointroini.it"
+    }
+  ],
+  "require": {
+    "php": ">=8.0"
+  },
+  "require-dev": {
+    "monolog/monolog": "~3.0",
+    "phpunit/phpunit": "^9",
+    "pestphp/pest": "^1.22"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mintdev\\Monolog\\Formatter\\": "src/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
