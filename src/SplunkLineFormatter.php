@@ -15,12 +15,13 @@ class SplunkLineFormatter extends LineFormatter
         ?string $dateFormat = null,
         bool $allowInlineLineBreaks = false,
         bool $ignoreEmptyContextAndExtra = false,
-        string $quoteReplacement = ''
+        string $quoteReplacement = '^'
     ) {
         if ($format === null) {
             $format = self::SPLUNK_FORMAT;
         }
-
+        // By default we just put the Unix timestamp to save Splunk processing costs;
+        // We'll never actually search on this via Splunk, it has its own timestamp data.
         if ($dateFormat === null) {
             $dateFormat = 'U';
         }
@@ -33,7 +34,24 @@ class SplunkLineFormatter extends LineFormatter
         $this->quoteReplacement = $quoteReplacement;
     }
 
-    public function toString($data): string
+    protected function jsonEncode($data): string
+    {
+        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+            return $this->toJson($data, true);
+        }
+
+        return str_replace('\\/', '/', @json_encode($data));
+    }
+
+    /**
+     * Public so we can run unit tests against it
+     */
+    public function publicConvertToString($data): string
+    {
+        return $this->convertToString($data);
+    }
+
+    protected function convertToString($data): string
     {
         if (null === $data || is_bool($data)) {
             return var_export($data, true);
@@ -60,7 +78,7 @@ class SplunkLineFormatter extends LineFormatter
                                 $v = '"'.$this->toQuoteSafeString($v).'"';
                             }
                         } else {
-                            $v = '"'.$this->toQuoteSafeString($this->toJson($v)).'"';
+                            $v = '"'.$this->toQuoteSafeString($this->jsonEncode($v)).'"';
                         }
                     }
                 }
@@ -71,7 +89,7 @@ class SplunkLineFormatter extends LineFormatter
             return implode(' ', $vals);
         }
 
-        return $this->toJson($data);
+        return $this->jsonEncode($data);
     }
 
     protected function toQuoteSafeString($string): string
