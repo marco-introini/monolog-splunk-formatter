@@ -20,3 +20,13 @@ test('a basic string works with no conversions', function () {
     $converted = $this->splunkFormatter->toString($str);
     expect($converted)->toEqual($str);
 });
+
+test('a basic array works', function () {
+    $str = faker()->text;
+    $converted = $this->splunkFormatter->toString([
+        "date" => microtime(),
+        "message" => "test"
+        ]);
+    var_dump($converted);
+    expect($converted)->toContain("message=test");
+});

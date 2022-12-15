@@ -60,7 +60,7 @@ class SplunkLineFormatter extends LineFormatter
                                 $v = '"'.$this->toQuoteSafeString($v).'"';
                             }
                         } else {
-                            $v = '"'.$this->toQuoteSafeString(json_encode($v)).'"';
+                            $v = '"'.$this->toQuoteSafeString($this->toJson($v)).'"';
                         }
                     }
                 }
@@ -71,7 +71,7 @@ class SplunkLineFormatter extends LineFormatter
             return implode(' ', $vals);
         }
 
-        return json_encode($data);
+        return $this->toJson($data);
     }
 
     protected function toQuoteSafeString($string): string
